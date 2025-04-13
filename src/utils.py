@@ -1,9 +1,9 @@
 import torch
 import numpy as np
-from torch.utils.data import Dataset
-import os
+from torch.utils.data import Dataset, DataLoader
 import pandas as pd
 from torchvision.io import read_image
+from torch.utils.data.dataset import random_split
 
 #FENtoVEC function from https://www.kaggle.com/code/gabrielhaselhurst/chess-dataset/notebook
 # Outputs array of size 64 (NEED TO CONVERT TO 8x8)
@@ -18,7 +18,6 @@ def FENtoVEC (FEN):
             VEC.append(pieces[FEN[i]])
         else:
             em = [VEC.append(0) for i in range(int(FEN[i]))]
-
     return VEC
 
 class ChessDataset(Dataset):
@@ -44,3 +43,18 @@ class ChessDataset(Dataset):
             input_tensor = self.transform(input_tensor)
 
         return input_tensor, label_tensor
+
+def get_train_test_val_dataloaders(
+        train_size, 
+        test_size, 
+        val_size,
+        batch_size,
+        dataset):
+    
+    train_dataset, test_dataset, val_dataset = random_split(dataset, [train_size, test_size, val_size])
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, test_loader, val_loader
