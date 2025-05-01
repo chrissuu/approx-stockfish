@@ -2,3 +2,4 @@
 chess-dataset/chessData.csv
 chess-dataset/random_evals.csv
 chess-dataset/tactic_evals.csv
+.env
